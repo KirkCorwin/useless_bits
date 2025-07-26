@@ -235,7 +235,7 @@
         monster.offsetY = touch.clientY - rect.top;
 
         dragHistory = [{ x: touch.clientX, y: touch.clientY, time: performance.now() }];
-      }, { passive: false });
+      });
     });
 
     document.addEventListener("mouseup", () => {
