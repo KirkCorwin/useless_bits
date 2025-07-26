@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Screen gremlins</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kirk Corwin | Data Science Portfolio</title>
+  <link rel="stylesheet" href="styles.css" />
   <style>
     body {
       margin: 0;
       height: 100vh;
-      background: #646464;
+      /* background: #646464; */
       overflow: hidden;
       position: relative;
     }
@@ -115,93 +117,38 @@
       background: #222;
       border-radius: 5px;
     }
-  #spawnBtn {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    z-index: 10;
-    padding: 16px 32px 16px 32px;
-    background: #a372b8;
-    color: white;
-    font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
-    font-size: 20px;
-    border: none;
-    border-radius: 20px;
-    box-shadow: 0 6px 0 #5b3c78;
-    cursor: pointer;
-    transition: all 0.1s ease-in-out;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  #spawnBtn:hover {
-    background: #8e5aa8;
-  }
-
-  #spawnBtn:active {
-    transform: translateY(4px);
-    box-shadow: 0 2px 0 #5b3c78;
-  }
-
-  /* Monster face on the button */
-  .monster-face {
-    position: relative;
-    width: 40px;
-    height: 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-left: 10px;
-  }
-
-  /* Eyes */
-  .monster-face .eye {
-    width: 10px;
-    height: 10px;
-    background: white;
-    border-radius: 50%;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .monster-face .eye::before {
-    content: '';
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    background: black;
-    border-radius: 50%;
-    top: 2.5px;
-    left: 2.5px;
-    transition: top 0.1s, left 0.1s;
-  }
-
-  /* Mouth */
-  .monster-face .mouth {
-    position: absolute;
-    bottom: -4px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 5px;
-    background: black;
-    border-radius: 0 0 10px 10px;
-    transition: all 0.2s ease;
-  }
-
-  #spawnBtn:hover .monster-face .mouth {
-    height: 10px;
-    border-radius: 10px;
-    bottom: 0;
-  }
   </style>
 </head>
 <body>
-  <!-- <audio
+  <header>
+    <div class="container header-inner">
+      <div class="nav-brand">Kirk Corwin</div>
+      <nav>
+        <ul class="nav">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Data Science Portfolio</h1>
+      <p>Welcome to my personal data science portfolio. I'm Kirk Corwin - a data science student passionate about machine learning, data visualization, and building practical tools with real-world impact.</p>
+    </section>
+  </main>
+
+  <footer class="container">
+    <p>&copy; 2025 Kirk Corwin</p>
+  </footer>
+
+  <audio
     id="squish-sound"
-    src="notaudio/horror-body-drop-152091.mp3"
-  ></audio> -->
+    src="audio/horror-body-drop-152091.mp31"
+  ></audio>
 
   <div class="monster" id="monster1">
     <div class="head">
@@ -243,15 +190,6 @@
     </div>
     <div class="paws"><div class="paw"></div><div class="paw"></div></div>
   </div>
-
-  <button id="spawnBtn">
-    Spawn Monster
-    <span class="monster-face">
-      <span class="eye"></span>
-      <span class="eye"></span>
-      <span class="mouth"></span>
-    </span>
-  </button>
 
   <script>
     const monsters = [
@@ -420,64 +358,6 @@
 
     // Start blinking for each monster
     monsters.forEach(startBlinking);
-// TEST
-    function createRandomMonster() {
-      const id = "monster" + Date.now();
-      const el = document.createElement("div");
-      el.className = "monster";
-      el.id = id;
-
-      const colors = ["#a372b8", "#d49b4f", "#67b186", "#ff6b81", "#3498db"];
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      const headHeight = Math.floor(Math.random() * 30 + 60); // 60–90px
-      const headWidth = Math.floor(Math.random() * 20 + 90);  // 90–110px
-
-      el.innerHTML = `
-        <div class="head" style="background:${randomColor}; width:${headWidth}px; height:${headHeight}px;">
-          <div class="horns">
-            <div class="horn"></div><div class="horn"></div>
-          </div>
-          <div class="eyes"><div class="eye"></div><div class="eye"></div></div>
-          <div class="mouth"></div>
-        </div>
-        <div class="paws"><div class="paw"></div><div class="paw"></div></div>
-        <div class="feet"><div class="foot"></div><div class="foot"></div></div>
-      `;
-
-      document.body.appendChild(el);
-
-      const x = Math.random() * (window.innerWidth - headWidth);
-      const monster = {
-        id,
-        el,
-        x,
-        y: -150, // drop from above
-        vx: 0,
-        vy: 0,
-        rotation: 0,
-        rotationSpeed: 0,
-        dragging: false,
-        recovering: false,
-        speed: 0.004 + Math.random() * 0.004,
-      };
-
-      // Setup mousedown like others
-      el.addEventListener("mousedown", (e) => {
-        draggedMonster = monster;
-        monster.dragging = true;
-        monster.offsetX = e.offsetX;
-        monster.offsetY = e.offsetY;
-        el.style.cursor = "grabbing";
-        dragHistory = [{ x: e.clientX, y: e.clientY, time: performance.now() }];
-      });
-
-      // Start blinking
-      monster.blinkFrequency = 8 + Math.random() * 12;
-      startBlinking(monster);
-
-      monsters.push(monster);
-    }
-// end test
 
     function animate() {
       monsters.forEach((monster, i) => {
@@ -506,8 +386,7 @@
           }
 
           if (monster.y >= window.innerHeight - 120) {
-// AUDIO HANDLING ON BOUNCE
-            // if (monster.vy > 3) squish.play();
+            if (monster.vy > 2) squish.play();
             // monster.y = window.innerHeight - 120;
             const baseY = window.innerHeight - 120;
             const headOffsets = { monster1: 10, monster2: 20, monster3: 0 }; // tweak as needed
@@ -550,8 +429,7 @@
           }
 
           const speed = Math.abs(monster.vx);
-          const max_speed = Math.min(0.5, 1 - speed * 10)
-          const footSpeed = Math.max(0.2, max_speed);
+          const footSpeed = Math.max(0.2, 1 - speed * 10);
           monster.el.querySelectorAll(".foot").forEach((foot) => {
             foot.style.animationDuration = `${footSpeed}s`;
           });
@@ -569,9 +447,6 @@
     }
 
     animate();
-    // TEST
-    document.getElementById("spawnBtn").addEventListener("click", createRandomMonster);
-    // end test  
   </script>
 </body>
 </html>
