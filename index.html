@@ -286,7 +286,7 @@
         draggedMonster = null;
         dragHistory = [];
       }
-    }, { passive: false });
+    });
 
     document.addEventListener("touchmove", (e) => {
       if (draggedMonster && e.touches.length > 0) {
@@ -304,7 +304,7 @@
         draggedMonster.vx = 0;
         draggedMonster.vy = 0;
       }
-    }, { passive: false });
+    });
 
     // Set average blink frequency per monster in seconds
     monsters[0].blinkFrequency = 3;  // Monster 1 blinks ~every 6s
