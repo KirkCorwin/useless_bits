@@ -224,14 +224,18 @@
         el.style.cursor = "grabbing";
         dragHistory = [{ x: e.clientX, y: e.clientY, time: performance.now() }];
       });
-        el.addEventListener("touchstart", (e) => {
+      el.addEventListener("touchstart", (e) => {
+        e.preventDefault(); // Important: prevents scroll!
         const touch = e.touches[0];
         draggedMonster = monster;
         monster.dragging = true;
-        monster.offsetX = touch.clientX - monster.x;
-        monster.offsetY = touch.clientY - monster.y;
+
+        const rect = monster.el.getBoundingClientRect();
+        monster.offsetX = touch.clientX - rect.left;
+        monster.offsetY = touch.clientY - rect.top;
+
         dragHistory = [{ x: touch.clientX, y: touch.clientY, time: performance.now() }];
-        });
+      }, { passive: false });
     });
 
     document.addEventListener("mouseup", () => {
@@ -261,44 +265,46 @@
     });
 
     document.addEventListener("touchend", () => {
-    if (draggedMonster) {
+      if (draggedMonster) {
         draggedMonster.dragging = false;
         draggedMonster.recovering = true;
 
         const half = Math.floor(dragHistory.length / 2);
         const recent = dragHistory.slice(half);
         if (recent.length > 1) {
-        const dx = recent[recent.length - 1].x - recent[0].x;
-        const dy = recent[recent.length - 1].y - recent[0].y;
-        const dt = (recent[recent.length - 1].time - recent[0].time) / 1000;
-        if (dt > 0) {
+          const dx = recent[recent.length - 1].x - recent[0].x;
+          const dy = recent[recent.length - 1].y - recent[0].y;
+          const dt = (recent[recent.length - 1].time - recent[0].time) / 1000;
+          if (dt > 0) {
             draggedMonster.vx = (dx / dt) * 0.0035;
             draggedMonster.vy = (dy / dt) * 0.0032;
             draggedMonster.rotationSpeed = draggedMonster.vx * 0.1;
-        }
+          }
         }
 
         draggedMonster.el.querySelector(".mouth").classList.add("surprised");
         draggedMonster = null;
         dragHistory = [];
-    }
-    });
+      }
+    }, { passive: false });
 
     document.addEventListener("touchmove", (e) => {
-        if (draggedMonster) {
-            const touch = e.touches[0];
-            dragHistory.push({ x: touch.clientX, y: touch.clientY, time: performance.now() });
-            if (dragHistory.length > 20) dragHistory.shift();
+      if (draggedMonster && e.touches.length > 0) {
+        e.preventDefault();
+        const touch = e.touches[0];
 
-            const targetX = touch.clientX - draggedMonster.offsetX;
-            const targetY = touch.clientY - draggedMonster.offsetY;
-            draggedMonster.x += (targetX - draggedMonster.x) * 0.2;
-            draggedMonster.y += (targetY - draggedMonster.y) * 0.2;
+        dragHistory.push({ x: touch.clientX, y: touch.clientY, time: performance.now() });
+        if (dragHistory.length > 20) dragHistory.shift();
 
-            draggedMonster.vx = 0;
-            draggedMonster.vy = 0;
-        }
-    });
+        const targetX = touch.clientX - draggedMonster.offsetX;
+        const targetY = touch.clientY - draggedMonster.offsetY;
+        draggedMonster.x += (targetX - draggedMonster.x) * 0.2;
+        draggedMonster.y += (targetY - draggedMonster.y) * 0.2;
+
+        draggedMonster.vx = 0;
+        draggedMonster.vy = 0;
+      }
+    }, { passive: false });
 
     // Set average blink frequency per monster in seconds
     monsters[0].blinkFrequency = 3;  // Monster 1 blinks ~every 6s
